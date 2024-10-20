@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 # llama.cpp-related shell utilities
-if [ -z "${LLAMA_UTILS_SOURCED}" ]; then
-    export LLAMA_UTILS_SOURCED=1
+if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
+    export LLM_LLAMA_CPP_UTILS_SOURCED=true
 
     export LLAMA_CPP_REPO_DIR=$LLM_UTILS_ROOT_DIR/llamacpp/repo
     export LLAMA_CPP_INSTALL_DIR=$LLM_UTILS_ROOT_DIR/llamacpp
@@ -127,4 +127,7 @@ if [ -z "${LLAMA_UTILS_SOURCED}" ]; then
             --check-tensors
     }
 
+    echo "llama.cpp LLM utilities loaded!"
+else
+    echo "llama.cpp LLM utilites are already loaded!"
 fi

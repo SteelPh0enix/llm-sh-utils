@@ -26,14 +26,12 @@ function llm-venv-activate() {
     tool_name=$1
 
     source $LLM_UTILS_ROOT_DIR/core-env.sh
-    echo "Core LLM virtualenv activated!"
 
     # is tool name provided?
     if [ ! -z "$tool_name" ]; then
         # does tool exist?
         if [ -d "$LLM_UTILS_ROOT_DIR/$tool_name" ]; then
             source $LLM_UTILS_ROOT_DIR/$tool_name/utils.sh
-            echo "Activated virtualenv for $tool_name"
         else
             echo "Tool doesn't exist: $tool_name"
         fi
