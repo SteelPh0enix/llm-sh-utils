@@ -17,6 +17,7 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
 
     export PATH=$LLAMA_CPP_INSTALL_DIR/bin:$PATH
     export LD_LIBRARY_PATH=$LLAMA_CPP_INSTALL_DIR/lib:$LD_LIBRARY_PATH
+    export PYTHONPATH=$LLAMA_CPP_REPO_DIR/gguf-py:$PYTHONPATH
 
     function llm-llama-cpp-clone() {
         local og_pwd=$(pwd)
@@ -46,7 +47,7 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
     }
 
     function llm-llama-cpp-build() {
-        local backend=${1:-rocm}
+        local backend=${1:-vulkan}
         local og_pwd=$(pwd)
 
         if [[ "$backend" == "rocm" ]]; then
@@ -62,11 +63,16 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
                 "-DLLAMA_STANDALONE=ON"
                 "-DLLAMA_CURL=OFF"
 
-                "-DGGML_CCACHE=ON"
+                "-DGGML_CCACHE=OFF"
                 "-DGGML_NATIVE=ON"
                 "-DGGML_OPENMP=ON"
                 "-DGGML_LTO=ON"
-                "-DGGML_RPC=ON"
+
+                # CPU acceleration
+                "-DGGML_AVX=ON"
+                "-DGGML_AVX2=ON"
+                "-DGGML_FMA=ON"
+                "-DGGML_F16C=ON"
 
                 # GPU acceleration
                 "-DAMDGPU_TARGETS=${GPU_ARCHS}"
@@ -74,6 +80,33 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
                 "-DGGML_CUDA_GRAPHS=ON"
                 "-DGGML_CUDA_FORCE_CUBLAS=ON"
             )
+        elif [[ "$backend" == "vulkan" ]]; then
+            local cmake_arguments=(
+                "-DCMAKE_BUILD_TYPE=Release"
+                "-DCMAKE_C_COMPILER=gcc"
+                "-DCMAKE_CXX_COMPILER=g++"
+                "-DCMAKE_INSTALL_PREFIX=$LLAMA_CPP_INSTALL_DIR"
+
+                "-DLLAMA_BUILD_TESTS=OFF"
+                "-DLLAMA_BUILD_EXAMPLES=ON"
+                "-DLLAMA_BUILD_SERVER=ON"
+                "-DLLAMA_STANDALONE=ON"
+                "-DLLAMA_CURL=OFF"
+
+                "-DGGML_CCACHE=OFF"
+                "-DGGML_NATIVE=ON"
+                "-DGGML_OPENMP=ON"
+                "-DGGML_LTO=ON"
+
+                # CPU acceleration
+                "-DGGML_AVX=ON"
+                "-DGGML_AVX2=ON"
+                "-DGGML_FMA=ON"
+                "-DGGML_F16C=ON"
+
+                # GPU acceleration
+                "-DGGML_VULKAN=ON"
+        )
         else
             echo "Unknown backend selected: $backend"
         fi
