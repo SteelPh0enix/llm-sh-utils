@@ -62,7 +62,7 @@ if [ -z "${LLM_CORE_ENV_UTILS_SOURCED}" ]; then
         # core utils
         python -m pip install --upgrade pip setuptools setuptools-scm wheel
         # pytorch
-        python -m pip install --pre --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/rocm6.2
+        python -m pip install --upgrade torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.2
         # llama.cpp requirements
         python -m pip install --upgrade sentencepiece transformers protobuf
     }

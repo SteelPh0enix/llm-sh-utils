@@ -106,7 +106,7 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
 
                 # GPU acceleration
                 "-DGGML_VULKAN=ON"
-        )
+            )
         else
             echo "Unknown backend selected: $backend"
         fi
@@ -125,27 +125,27 @@ if [ -z "${LLM_LLAMA_CPP_UTILS_SOURCED}" ]; then
     }
 
     function llm-llama-quantize-hf-model() {
-      local base_model_dir=$1
-      local output_quantization=${2:-auto}
-      local output_gguf_dir=${3:-.}
+        local base_model_dir=$1
+        local output_quantization=${2:-auto}
+        local output_gguf_dir=${3:-.}
 
-      # base_model_dir should point to a repository, so dir's name should be model's name
-      local model_name=$(basename $base_model_dir)
+        # base_model_dir should point to a repository, so dir's name should be model's name
+        local model_name=$(basename $base_model_dir)
 
-      if [ ! -d "$base_model_dir" ]; then
-        echo "Error: Model directory '$base_model_dir' does not exist."
-        return 1
-      fi
+        if [ ! -d "$base_model_dir" ]; then
+            echo "Error: Model directory '$base_model_dir' does not exist."
+            return 1
+        fi
 
-      # Run the conversion command
-      python $LLAMA_CPP_INSTALL_DIR/bin/convert_hf_to_gguf.py --outtype $output_quantization --outfile $output_gguf_dir/$model_name.$output_quantization.gguf $base_model_dir
+        # Run the conversion command
+        python $LLAMA_CPP_INSTALL_DIR/bin/convert_hf_to_gguf.py --outtype $output_quantization --outfile $output_gguf_dir/$model_name.$output_quantization.gguf $base_model_dir
 
-      # Check if the conversion was successful
-      if [ $? -eq 0 ]; then
-        echo "Model '$model_name' successfully quantized to $output_quantization format and saved as $output_gguf_dir/$model_name.$output_quantization.gguf"
-      else
-        echo "Error: Failed to quantize model '$base_model_dir'."
-      fi
+        # Check if the conversion was successful
+        if [ $? -eq 0 ]; then
+            echo "Model '$model_name' successfully quantized to $output_quantization format and saved as $output_gguf_dir/$model_name.$output_quantization.gguf"
+        else
+            echo "Error: Failed to quantize model '$base_model_dir'."
+        fi
     }
 
     function llm-server-llama() {
